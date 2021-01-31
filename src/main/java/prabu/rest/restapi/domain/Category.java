@@ -1,6 +1,7 @@
 package prabu.rest.restapi.domain;
 
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Entity;
