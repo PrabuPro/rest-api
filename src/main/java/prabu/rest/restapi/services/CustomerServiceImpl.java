@@ -3,6 +3,7 @@ package prabu.rest.restapi.services;
 import org.springframework.stereotype.Service;
 import prabu.rest.restapi.api.vi.mapper.CustomerMapper;
 import prabu.rest.restapi.api.vi.model.CustomerDTO;
+import prabu.rest.restapi.domain.Customer;
 import prabu.rest.restapi.repository.CustomerRepository;
 
 import java.util.List;
@@ -34,5 +35,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO getCustomerByName(String firstName) {
         return customerMapper.customerToCustomerDTO(customerRepository.findByFirstName(firstName)) ;
+    }
+
+    @Override
+    public CustomerDTO saveNewCustomer(CustomerDTO customerDTO) {
+        Customer savedCustomer = customerRepository.save(customerMapper.customerDTOtoCustomer(customerDTO));
+
+        CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(savedCustomer);
+        returnDTO.setCustomerUrl("/api/v1/customer/" + returnDTO.getId());
+
+        return returnDTO;
     }
 }
