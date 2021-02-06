@@ -5,6 +5,7 @@ import prabu.rest.restapi.api.vi.mapper.VendorMapper;
 import prabu.rest.restapi.api.vi.model.VendorDTO;
 import prabu.rest.restapi.api.vi.model.VendorListDTO;
 import prabu.rest.restapi.controllers.v1.VendorController;
+import prabu.rest.restapi.domain.Vendor;
 import prabu.rest.restapi.repository.VendorRepository;
 
 import java.util.List;
@@ -41,5 +42,17 @@ public class VendorServiceImpl implements VendorService {
                     return vendorDTO;
                 })
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @Override
+    public VendorDTO saveVendor(VendorDTO vendorDTO) {
+        Vendor vendor = vendorMapper.ventorDTOToVendor(vendorDTO);
+
+        Vendor savedVendor = vendorRepository.save(vendor);
+
+        VendorDTO returnVendor = vendorMapper.vendorToVendorDTO(savedVendor) ;
+        returnVendor.setVendorUrl(VendorController.VENDOR_URL + "/" + savedVendor.getId());
+
+        return returnVendor;
     }
 }

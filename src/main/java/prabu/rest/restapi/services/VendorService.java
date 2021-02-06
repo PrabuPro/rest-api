@@ -11,4 +11,6 @@ public interface VendorService {
 
     VendorDTO findById(Long id);
 
+    VendorDTO saveVendor(VendorDTO vendorDTO);
+
 }

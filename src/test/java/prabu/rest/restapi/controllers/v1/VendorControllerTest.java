@@ -20,11 +20,13 @@ import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static prabu.rest.restapi.controllers.v1.AbstractRestController.asJsonString;
 
 class VendorControllerTest {
 
@@ -89,5 +91,24 @@ class VendorControllerTest {
         mockMvc.perform(get(VendorController.VENDOR_URL + "/99")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void saveVendor() throws Exception {
+        VendorDTO vendor = new VendorDTO();
+        vendor.setName("vendor3");
+
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("vendor3");
+        vendorDTO.setVendorUrl(VendorController.VENDOR_URL + "/3");
+
+        when(vendorService.saveVendor(any(VendorDTO.class))).thenReturn(vendorDTO);
+
+        mockMvc.perform(post(VendorController.VENDOR_URL )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendor)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo("vendor3")))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.VENDOR_URL + "/3")));
     }
 }

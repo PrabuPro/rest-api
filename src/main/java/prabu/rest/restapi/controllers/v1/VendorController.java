@@ -3,9 +3,7 @@ package prabu.rest.restapi.controllers.v1;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import prabu.rest.restapi.api.vi.model.VendorDTO;
 import prabu.rest.restapi.api.vi.model.VendorListDTO;
 import prabu.rest.restapi.services.VendorService;
@@ -31,6 +29,12 @@ public class VendorController {
     @GetMapping("/{id}")
     public ResponseEntity<VendorDTO> getVendorById(@PathVariable Long id){
         return new ResponseEntity<VendorDTO>(vendorService.findById(id), HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<VendorDTO> saveVendor(@RequestBody VendorDTO vendorDTO){
+        return new ResponseEntity<VendorDTO>(
+                vendorService.saveVendor(vendorDTO), HttpStatus.OK);
     }
 
 }
