@@ -2,12 +2,9 @@ package prabu.rest.restapi.services;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import prabu.rest.restapi.api.vi.mapper.CustomerMapper;
 import prabu.rest.restapi.api.vi.model.CustomerDTO;
@@ -15,6 +12,7 @@ import prabu.rest.restapi.bootstrap.Bootstrap;
 import prabu.rest.restapi.domain.Customer;
 import prabu.rest.restapi.repository.CategoryRepository;
 import prabu.rest.restapi.repository.CustomerRepository;
+import prabu.rest.restapi.repository.VendorRepository;
 
 import java.util.List;
 
@@ -34,11 +32,14 @@ public class CustomerServiceImplIT {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    VendorRepository vendorRepository;
+
     CustomerService customerService;
 
     @Before
     public void setUp() throws Exception {
-        Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository);
+        Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository, vendorRepository);
         bootstrap.run();
 
         customerService = new CustomerServiceImpl(customerRepository,CustomerMapper.INSTANCE);
