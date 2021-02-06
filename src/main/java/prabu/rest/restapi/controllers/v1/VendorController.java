@@ -8,7 +8,7 @@ import prabu.rest.restapi.api.vi.model.VendorDTO;
 import prabu.rest.restapi.api.vi.model.VendorListDTO;
 import prabu.rest.restapi.services.VendorService;
 
-@Controller
+@RestController
 @RequestMapping(VendorController.VENDOR_URL)
 public class VendorController {
 
