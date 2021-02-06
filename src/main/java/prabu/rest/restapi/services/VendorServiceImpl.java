@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import prabu.rest.restapi.api.vi.mapper.VendorMapper;
 import prabu.rest.restapi.api.vi.model.VendorDTO;
 import prabu.rest.restapi.api.vi.model.VendorListDTO;
+import prabu.rest.restapi.controllers.v1.VendorController;
 import prabu.rest.restapi.repository.VendorRepository;
 
 import java.util.List;
@@ -26,8 +27,19 @@ public class VendorServiceImpl implements VendorService {
         return vendorRepository.findAll().stream()
                 .map(vendor -> {
                     VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
-                    vendorDTO.setVendorUrl("/api/v1/vendor/" + vendor.getId());
+                    vendorDTO.setVendorUrl(VendorController.VENDOR_URL + "/" + vendor.getId());
                     return vendorDTO;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public VendorDTO findById(Long id) {
+        return vendorRepository.findById(id)
+                .map(vendorMapper::vendorToVendorDTO)
+                .map(vendorDTO -> {
+                    vendorDTO.setVendorUrl(VendorController.VENDOR_URL + "/" + id);
+                    return vendorDTO;
+                })
+                .orElseThrow(ResourceNotFoundException::new);
     }
 }

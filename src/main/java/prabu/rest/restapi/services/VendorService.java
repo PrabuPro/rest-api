@@ -9,4 +9,6 @@ public interface VendorService {
 
     List<VendorDTO> findAll();
 
+    VendorDTO findById(Long id);
+
 }

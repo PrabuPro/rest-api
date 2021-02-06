@@ -12,8 +12,10 @@ import prabu.rest.restapi.repository.VendorRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 class VendorServiceImplTest {
@@ -39,5 +41,18 @@ class VendorServiceImplTest {
 
         assertEquals(2, vendorDTOList.size());
 
+    }
+
+    @Test
+    void findById(){
+        Vendor vendor = new Vendor();
+        vendor.setId(1L);
+        vendor.setName("vendor");
+
+        when(vendorRepository.findById(anyLong())).thenReturn(Optional.of(vendor));
+
+        VendorDTO findVendor = vendorService.findById(1L);
+
+        assertEquals(findVendor.getName(), vendor.getName());
     }
 }

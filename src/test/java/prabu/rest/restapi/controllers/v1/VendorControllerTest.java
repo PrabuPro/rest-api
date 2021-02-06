@@ -8,15 +8,19 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.ResourceAccessException;
 import prabu.rest.restapi.api.vi.model.VendorDTO;
 import prabu.rest.restapi.domain.Vendor;
+import prabu.rest.restapi.services.ResourceNotFoundException;
 import prabu.rest.restapi.services.VendorService;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -52,11 +56,38 @@ class VendorControllerTest {
 
         when(vendorService.findAll()).thenReturn(vendorDTOList);
 
-        mockMvc.perform(get("/api/v1/vendor")
+        mockMvc.perform(get(VendorController.VENDOR_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendors", hasSize(2)));
 
+    }
 
+    @Test
+    void getVendorById() throws Exception {
+        Vendor vendor = new Vendor();
+        vendor.setId(1L);
+        vendor.setName("vendor1");
+
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName(vendor.getName());
+        vendorDTO.setVendorUrl(VendorController.VENDOR_URL + "/" + vendor.getId());
+
+        when(vendorService.findById(anyLong())).thenReturn(vendorDTO);
+
+        mockMvc.perform(get(VendorController.VENDOR_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(vendor.getName())))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.VENDOR_URL + "/1")));
+    }
+
+    @Test
+    void getVendorByIdNotFound() throws Exception {
+        when(vendorService.findById(anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get(VendorController.VENDOR_URL + "/99")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
