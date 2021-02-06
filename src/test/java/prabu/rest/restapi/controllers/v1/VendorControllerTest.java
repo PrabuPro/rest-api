@@ -111,4 +111,23 @@ class VendorControllerTest {
                 .andExpect(jsonPath("$.name", equalTo("vendor3")))
                 .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.VENDOR_URL + "/3")));
     }
+
+    @Test
+    void updateVendorById() throws Exception {
+        VendorDTO vendor = new VendorDTO();
+        vendor.setName("vendor3");
+
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("vendor311");
+        vendorDTO.setVendorUrl(VendorController.VENDOR_URL + "/3");
+
+        when(vendorService.updateVendor(anyLong(),any(VendorDTO.class))).thenReturn(vendorDTO);
+
+        mockMvc.perform(put(VendorController.VENDOR_URL + "/3" )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendor)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo("vendor311")))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.VENDOR_URL + "/3")));
+    }
 }

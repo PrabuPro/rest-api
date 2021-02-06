@@ -21,6 +21,8 @@ import static org.mockito.Mockito.when;
 
 class VendorServiceImplTest {
 
+    public static final String NAME = "vendor3";
+    public static final long ID = 3L;
     @Mock
     VendorRepository vendorRepository;
 
@@ -60,8 +62,8 @@ class VendorServiceImplTest {
     @Test
     void saveObject(){
         Vendor vendor = new Vendor();
-        vendor.setId(3L);
-        vendor.setName("vendor3");
+        vendor.setId(ID);
+        vendor.setName(NAME);
 
         VendorDTO vendorDTO = new VendorDTO();
         vendorDTO.setName(vendor.getName());
@@ -71,5 +73,23 @@ class VendorServiceImplTest {
         VendorDTO savedVendor = vendorService.saveVendor(vendorDTO);
 
         assertEquals(savedVendor.getName(), vendor.getName());
+    }
+
+    @Test
+    void updateVendor(){
+
+        Vendor vendorUpdated = new Vendor();
+        vendorUpdated.setId(ID);
+        vendorUpdated.setName("vendor100");
+
+        VendorDTO updateVendor = new VendorDTO();
+        updateVendor.setName("vendor100");
+
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(vendorUpdated);
+
+        VendorDTO vendorDTO = vendorService.updateVendor(ID,updateVendor);
+
+        assertEquals(vendorDTO.getName(), updateVendor.getName());
+
     }
 }
