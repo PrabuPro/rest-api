@@ -38,4 +38,23 @@ public class CustomerController {
                 customerService.saveNewCustomer(customerDTO), HttpStatus.OK);
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable String id, @RequestBody CustomerDTO customerDTO){
+        return new ResponseEntity<CustomerDTO>(
+                customerService.updateCustomerById(Long.valueOf(id), customerDTO), HttpStatus.OK);
+    }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<CustomerDTO> patchCustomer(@PathVariable String id, @RequestBody CustomerDTO customerDTO){
+        return new ResponseEntity<CustomerDTO>(
+                customerService.patchCustomer(Long.valueOf(id), customerDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id){
+        customerService.deleteCustomerById(id);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
 }

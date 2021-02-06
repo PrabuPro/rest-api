@@ -17,12 +17,13 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static prabu.rest.restapi.controllers.v1.AbstractRestController.asJsonString;
@@ -97,5 +98,53 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo("john")))
                 .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customer/1")));
+    }
+
+    @Test
+    void updateCustomer() throws Exception {
+        CustomerDTO customer = new CustomerDTO();
+        customer.setFirstName("john");
+
+        CustomerDTO returnCustomer = new CustomerDTO();
+        returnCustomer.setId(1L);
+        returnCustomer.setFirstName(customer.getFirstName());
+        returnCustomer.setCustomerUrl("/api/v1/customer/1");
+
+        when(customerService.updateCustomerById(1L,customer)).thenReturn(returnCustomer);
+
+        mockMvc.perform(put("/api/v1/customer/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customer)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", equalTo("john")))
+                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customer/1")));
+    }
+
+    @Test
+    void patchCustomer() throws Exception {
+        CustomerDTO customer = new CustomerDTO();
+        customer.setFirstName("john");
+
+        CustomerDTO returnCustomer = new CustomerDTO();
+        returnCustomer.setId(1L);
+        returnCustomer.setFirstName(customer.getFirstName());
+        returnCustomer.setCustomerUrl("/api/v1/customer/1");
+
+        when(customerService.patchCustomer(1L,customer)).thenReturn(returnCustomer);
+
+        mockMvc.perform(patch("/api/v1/customer/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customer)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", equalTo("john")))
+                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customer/1")));
+    }
+
+    @Test
+    void deleteCustomer() throws Exception {
+        mockMvc.perform(delete("/api/v1/customer/1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(customerService).deleteCustomerById(anyLong());
     }
 }
