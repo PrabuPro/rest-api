@@ -130,4 +130,11 @@ class VendorControllerTest {
                 .andExpect(jsonPath("$.name", equalTo("vendor311")))
                 .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.VENDOR_URL + "/3")));
     }
+
+    @Test
+    void deleteVendorById() throws Exception {
+        mockMvc.perform(delete(VendorController.VENDOR_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }

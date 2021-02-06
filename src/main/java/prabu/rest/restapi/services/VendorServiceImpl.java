@@ -68,4 +68,11 @@ public class VendorServiceImpl implements VendorService {
 
         return saveVendorToRepository(vendor);
     }
+
+    @Override
+    public void deleteVendor(Long id) {
+        vendorRepository.deleteById(id);
+    }
+
+
 }
