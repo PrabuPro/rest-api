@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import prabu.rest.restapi.api.vi.model.CategoryDTO;
 import prabu.rest.restapi.domain.Category;
 import prabu.rest.restapi.services.CategoryService;
+import prabu.rest.restapi.services.ResourceNotFoundException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +39,9 @@ class CategoryControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
+                .setControllerAdvice(new RestResponceEntityExceptoinHandler())
+                .build();
     }
 
     @Test
@@ -74,5 +77,14 @@ class CategoryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(JHON)));
+    }
+
+    @Test
+    void getTestByNameNotFound() throws Exception {
+        when(categoryService.getCategoryByName(anyString())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get("/api/v1/categories/bsssa")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
